@@ -7,6 +7,7 @@ import { Brain, Plus, LogOut, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import SetCard from "@/components/SetCard";
 import CreateSetDialog from "@/components/CreateSetDialog";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 interface FlashcardSet {
   id: string;
@@ -107,7 +108,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background transition-colors duration-300">
       <header className="border-b border-border bg-card shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -122,10 +123,13 @@ const Dashboard = () => {
                 </p>
               </div>
             </div>
-            <Button variant="outline" onClick={handleSignOut} size="sm">
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
+            <div className="flex items-center gap-4">
+              <ThemeSwitcher />
+              <Button variant="outline" onClick={handleSignOut} size="sm">
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
           </div>
         </div>
       </header>

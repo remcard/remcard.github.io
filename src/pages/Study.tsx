@@ -4,16 +4,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, RotateCw, Check, X, Star } from "lucide-react";
+import { ArrowLeft, RotateCw, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 interface Flashcard {
   id: string;
   term: string;
   definition: string;
-  mastery_level?: number;
-  is_starred?: boolean;
 }
 
 const Study = () => {
@@ -24,7 +23,6 @@ const Study = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [stats, setStats] = useState({ correct: 0, total: 0 });
 
   useEffect(() => {
     fetchSetAndCards();
@@ -36,9 +34,15 @@ const Study = () => {
         .from("flashcard_sets")
         .select("title")
         .eq("id", id)
-        .single();
+        .maybeSingle();
 
       if (setError) throw setError;
+      if (!setData) {
+        toast.error("Set not found");
+        navigate("/");
+        return;
+      }
+      
       setSetTitle(setData.title);
 
       const { data: cardsData, error: cardsError } = await supabase
@@ -55,29 +59,7 @@ const Study = () => {
         return;
       }
 
-      // Fetch study progress
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: progressData } = await supabase
-          .from("study_progress")
-          .select("*")
-          .eq("user_id", user.id)
-          .in("flashcard_id", cardsData.map(c => c.id));
-
-        const progressMap = new Map(
-          progressData?.map(p => [p.flashcard_id, p]) || []
-        );
-
-        const enrichedCards = cardsData.map(card => ({
-          ...card,
-          mastery_level: progressMap.get(card.id)?.mastery_level || 0,
-          is_starred: progressMap.get(card.id)?.is_starred || false,
-        }));
-
-        setFlashcards(enrichedCards);
-      } else {
-        setFlashcards(cardsData);
-      }
+      setFlashcards(cardsData);
     } catch (error: any) {
       toast.error("Failed to load flashcards");
       navigate("/");
@@ -90,50 +72,19 @@ const Study = () => {
     setIsFlipped(!isFlipped);
   };
 
-  const handleKnow = async (knows: boolean) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      const currentCard = flashcards[currentIndex];
-      const newMasteryLevel = Math.min((currentCard.mastery_level || 0) + (knows ? 1 : 0), 3);
-
-      const { error } = await supabase
-        .from("study_progress")
-        .upsert({
-          user_id: user.id,
-          flashcard_id: currentCard.id,
-          mastery_level: newMasteryLevel,
-          times_reviewed: (currentCard.mastery_level || 0) + 1,
-          times_correct: (knows ? 1 : 0),
-          last_studied_at: new Date().toISOString(),
-        });
-
-      if (error) throw error;
-
-      if (knows) {
-        setStats(prev => ({ ...prev, correct: prev.correct + 1, total: prev.total + 1 }));
-      } else {
-        setStats(prev => ({ ...prev, total: prev.total + 1 }));
-      }
-
-      // Move to next card
-      if (currentIndex < flashcards.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-        setIsFlipped(false);
-      } else {
-        toast.success(`Study session complete! Score: ${stats.correct + (knows ? 1 : 0)}/${stats.total + 1}`);
-        navigate("/");
-      }
-    } catch (error: any) {
-      toast.error("Failed to save progress");
+  const handleNext = () => {
+    if (currentIndex < flashcards.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      setIsFlipped(false);
+    } else {
+      toast.success("You've completed this set!");
+      navigate("/");
     }
   };
 
   const handleRestart = () => {
     setCurrentIndex(0);
     setIsFlipped(false);
-    setStats({ correct: 0, total: 0 });
   };
 
   if (isLoading) {
@@ -148,14 +99,17 @@ const Study = () => {
   const progress = ((currentIndex + 1) / flashcards.length) * 100;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background transition-colors duration-300">
       <header className="border-b border-border bg-card shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Button variant="ghost" onClick={() => navigate("/")}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Exit Study Mode
-            </Button>
+            <div className="flex items-center gap-4">
+              <ThemeSwitcher />
+              <Button variant="ghost" onClick={() => navigate("/")}>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Exit
+              </Button>
+            </div>
             <div className="text-center">
               <h1 className="font-semibold">{setTitle}</h1>
               <p className="text-sm text-muted-foreground">
@@ -173,10 +127,6 @@ const Study = () => {
 
       <main className="container mx-auto px-4 py-12 max-w-3xl">
         <div className="space-y-6">
-          <div className="text-center text-sm text-muted-foreground">
-            Score: {stats.correct} / {stats.total}
-          </div>
-
           <div
             className="perspective-1000 cursor-pointer"
             onClick={handleFlip}
@@ -218,48 +168,22 @@ const Study = () => {
             </Card>
           </div>
 
-          {isFlipped && (
-            <div className="flex gap-4 justify-center animate-fade-in">
-              <Button
-                onClick={() => handleKnow(false)}
-                variant="outline"
-                size="lg"
-                className="flex-1 max-w-xs hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
-              >
-                <X className="w-5 h-5 mr-2" />
-                Don't Know
-              </Button>
-              <Button
-                onClick={() => handleKnow(true)}
-                size="lg"
-                className="flex-1 max-w-xs bg-success hover:bg-success/90"
-              >
-                <Check className="w-5 h-5 mr-2" />
-                Know
-              </Button>
-            </div>
-          )}
-
-          {currentCard.mastery_level !== undefined && (
-            <div className="flex items-center justify-center gap-2 text-sm">
-              <div className="flex gap-1">
-                {[0, 1, 2, 3].map(level => (
-                  <div
-                    key={level}
-                    className={cn(
-                      "w-2 h-2 rounded-full",
-                      level < (currentCard.mastery_level || 0)
-                        ? "bg-success"
-                        : "bg-muted"
-                    )}
-                  />
-                ))}
-              </div>
-              <span className="text-muted-foreground">
-                Mastery Level: {currentCard.mastery_level || 0}/3
-              </span>
-            </div>
-          )}
+          <div className="flex justify-center">
+            <Button
+              onClick={handleNext}
+              size="lg"
+              className="bg-gradient-primary hover:opacity-90 transition-opacity px-8"
+            >
+              {currentIndex < flashcards.length - 1 ? (
+                <>
+                  Next Card
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </>
+              ) : (
+                "Complete"
+              )}
+            </Button>
+          </div>
         </div>
       </main>
     </div>
