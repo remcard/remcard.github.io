@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Trash2, Edit, Play } from "lucide-react";
+import { BookOpen, Trash2, Edit, Play, Users, Zap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,6 +27,7 @@ interface SetCardProps {
 }
 
 const SetCard = ({ set, onDelete, onStudy, onEdit }: SetCardProps) => {
+  const navigate = useNavigate();
   const cardCount = set.flashcards[0]?.count || 0;
 
   return (
@@ -48,46 +50,66 @@ const SetCard = ({ set, onDelete, onStudy, onEdit }: SetCardProps) => {
           <span>{cardCount} {cardCount === 1 ? 'card' : 'cards'}</span>
         </div>
         
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            <Button
+              onClick={onStudy}
+              className="flex-1 bg-gradient-primary hover:opacity-90 transition-opacity"
+              disabled={cardCount === 0}
+            >
+              <Play className="w-4 h-4 mr-2" />
+              Study
+            </Button>
+            <Button
+              onClick={() => navigate(`/matching/${set.id}`)}
+              variant="outline"
+              disabled={cardCount === 0}
+              className="flex-1"
+            >
+              <Zap className="w-4 h-4 mr-2" />
+              Match
+            </Button>
+            <Button
+              onClick={onEdit}
+              variant="outline"
+              size="icon"
+            >
+              <Edit className="w-4 h-4" />
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="icon" className="hover:bg-destructive hover:text-destructive-foreground">
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete this set?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete "{set.title}" and all its flashcards. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => onDelete(set.id)}
+                    className="bg-destructive hover:bg-destructive/90"
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
           <Button
-            onClick={onStudy}
-            className="flex-1 bg-gradient-primary hover:opacity-90 transition-opacity"
-            disabled={cardCount === 0}
-          >
-            <Play className="w-4 h-4 mr-2" />
-            Study
-          </Button>
-          <Button
-            onClick={onEdit}
+            onClick={() => navigate(`/host/${set.id}`)}
             variant="outline"
-            size="icon"
+            disabled={cardCount === 0}
+            className="w-full"
           >
-            <Edit className="w-4 h-4" />
+            <Users className="w-4 h-4 mr-2" />
+            Host Live Game
           </Button>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" size="icon" className="hover:bg-destructive hover:text-destructive-foreground">
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Delete this set?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This will permanently delete "{set.title}" and all its flashcards. This action cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => onDelete(set.id)}
-                  className="bg-destructive hover:bg-destructive/90"
-                >
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
         </div>
       </CardContent>
     </Card>

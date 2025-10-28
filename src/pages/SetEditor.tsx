@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Plus, Trash2, Save } from "lucide-react";
 import { toast } from "sonner";
+import ImportFlashcardsDialog from "@/components/ImportFlashcardsDialog";
 
 interface Flashcard {
   id?: string;
@@ -220,10 +221,13 @@ const SetEditor = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold">Flashcards</h3>
-              <Button onClick={addCard} size="sm" variant="outline">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Card
-              </Button>
+              <div className="flex gap-2">
+                {id && <ImportFlashcardsDialog setId={id} onSuccess={fetchSet} />}
+                <Button onClick={addCard} size="sm" variant="outline">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Card
+                </Button>
+              </div>
             </div>
 
             {flashcards.map((card, index) => (

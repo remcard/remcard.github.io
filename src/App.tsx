@@ -8,6 +8,11 @@ import Auth from "./pages/Auth";
 import Study from "./pages/Study";
 import SetEditor from "./pages/SetEditor";
 import NotFound from "./pages/NotFound";
+import HostGame from "./pages/HostGame";
+import JoinGame from "./pages/JoinGame";
+import GameLobby from "./pages/GameLobby";
+import GamePlay from "./pages/GamePlay";
+import MatchingGame from "./pages/MatchingGame";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +28,11 @@ const App = () => (
           <Route path="/study/:id" element={<Study />} />
           <Route path="/set/:id/edit" element={<SetEditor />} />
           <Route path="/set/new" element={<SetEditor />} />
+          <Route path="/host/:setId" element={<HostGame />} />
+          <Route path="/join" element={<JoinGame />} />
+          <Route path="/game/lobby/:gameId" element={<GameLobby />} />
+          <Route path="/game/play/:gameId" element={<GamePlay />} />
+          <Route path="/matching/:id" element={<MatchingGame />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

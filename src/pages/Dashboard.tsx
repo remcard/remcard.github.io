@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
-import { Brain, Plus, LogOut, BookOpen } from "lucide-react";
+import { Brain, Plus, LogOut, BookOpen, Users } from "lucide-react";
 import { toast } from "sonner";
 import SetCard from "@/components/SetCard";
 import CreateSetDialog from "@/components/CreateSetDialog";
@@ -125,6 +125,10 @@ const Dashboard = () => {
             </div>
             <div className="flex items-center gap-4">
               <ThemeSwitcher />
+              <Button variant="outline" onClick={() => navigate("/join")} size="sm">
+                <Users className="w-4 h-4 mr-2" />
+                Join Game
+              </Button>
               <Button variant="outline" onClick={handleSignOut} size="sm">
                 <LogOut className="w-4 h-4 mr-2" />
                 Sign Out
