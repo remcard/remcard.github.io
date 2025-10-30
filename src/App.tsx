@@ -12,6 +12,7 @@ import HostGame from "./pages/HostGame";
 import JoinGame from "./pages/JoinGame";
 import GameLobby from "./pages/GameLobby";
 import GamePlay from "./pages/GamePlay";
+import Settings from "./pages/Settings";
 import MatchingGame from "./pages/MatchingGame";
 import LearnMode from "./pages/LearnMode";
 import TestMode from "./pages/TestMode";
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/matching/:id" element={<MatchingGame />} />
           <Route path="/learn/:id" element={<LearnMode />} />
           <Route path="/test/:id" element={<TestMode />} />
+          <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

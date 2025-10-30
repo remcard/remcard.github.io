@@ -6,7 +6,6 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { ArrowLeft, Trophy, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 interface Flashcard {
   id: string;
@@ -219,13 +218,10 @@ const MatchingGame = () => {
       <header className="border-b border-border bg-card shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <ThemeSwitcher />
-              <Button variant="ghost" onClick={() => navigate("/")}>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-            </div>
+            <Button variant="ghost" onClick={() => navigate("/")}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
             <div className="text-center">
               <h1 className="font-semibold">{setTitle} - Matching Game</h1>
               <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">

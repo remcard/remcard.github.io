@@ -6,7 +6,6 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 interface Flashcard {
   id: string;
@@ -134,15 +133,12 @@ const GamePlay = () => {
       <header className="border-b border-border bg-card shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <ThemeSwitcher />
-              {isHost && (
-                <Button variant="ghost" onClick={() => navigate("/")}>
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  End Game
-                </Button>
-              )}
-            </div>
+            {isHost && (
+              <Button variant="ghost" onClick={() => navigate("/")}>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                End Game
+              </Button>
+            )}
             <div className="text-center">
               <h1 className="font-semibold">{(game?.flashcard_sets as any)?.title}</h1>
               <p className="text-sm text-muted-foreground">

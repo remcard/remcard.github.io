@@ -3,11 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
-import { Brain, Plus, LogOut, BookOpen, Users } from "lucide-react";
+import { Brain, Plus, LogOut, BookOpen, Users, Settings as SettingsIcon } from "lucide-react";
 import { toast } from "sonner";
 import SetCard from "@/components/SetCard";
 import CreateSetDialog from "@/components/CreateSetDialog";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 interface FlashcardSet {
   id: string;
@@ -124,7 +123,10 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <ThemeSwitcher />
+              <Button variant="outline" onClick={() => navigate("/settings")} size="sm">
+                <SettingsIcon className="w-4 h-4 mr-2" />
+                Settings
+              </Button>
               <Button variant="outline" onClick={() => navigate("/join")} size="sm">
                 <Users className="w-4 h-4 mr-2" />
                 Join Game

@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { ArrowLeft, Users, Copy, Play } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 interface Participant {
   id: string;
@@ -182,13 +181,10 @@ const HostGame = () => {
       <header className="border-b border-border bg-card shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <ThemeSwitcher />
-              <Button variant="ghost" onClick={() => navigate("/")}>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-            </div>
+            <Button variant="ghost" onClick={() => navigate("/")}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
             <h1 className="font-semibold text-lg">Game Lobby</h1>
             <div className="w-24" />
           </div>

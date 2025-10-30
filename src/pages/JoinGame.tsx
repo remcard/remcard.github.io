@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 const JoinGame = () => {
   const navigate = useNavigate();
@@ -69,13 +68,10 @@ const JoinGame = () => {
       <header className="border-b border-border bg-card shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <ThemeSwitcher />
-              <Button variant="ghost" onClick={() => navigate("/")}>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-            </div>
+            <Button variant="ghost" onClick={() => navigate("/")}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
             <h1 className="font-semibold text-lg">Join Game</h1>
             <div className="w-24" />
           </div>

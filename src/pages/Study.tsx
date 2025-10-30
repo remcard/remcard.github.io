@@ -6,10 +6,9 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, RotateCw, ArrowRight, Play, Pause, Shuffle, Star } from "lucide-react";
+import { ArrowLeft, RotateCw, ArrowRight, Play, Pause, Shuffle, Star, Settings as SettingsIcon } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 interface Flashcard {
   id: string;
@@ -209,7 +208,9 @@ const Study = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <ThemeSwitcher />
+              <Button variant="ghost" size="icon" onClick={() => navigate("/settings")}>
+                <SettingsIcon className="w-4 h-4" />
+              </Button>
               <Button variant="ghost" onClick={() => navigate("/")}>
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Exit

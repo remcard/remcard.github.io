@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Users } from "lucide-react";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 interface Participant {
   id: string;
@@ -122,7 +121,7 @@ const GameLobby = () => {
       <header className="border-b border-border bg-card shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <ThemeSwitcher />
+            <div className="w-24" />
             <h1 className="font-semibold text-lg">Waiting for Host</h1>
             <div className="w-24" />
           </div>
