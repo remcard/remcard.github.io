@@ -47,7 +47,7 @@ const Study = () => {
 
   useEffect(() => {
     filterCards();
-  }, [flashcards, starredOnly]);
+  }, [starredOnly]); // Removed flashcards dependency to prevent reset on star toggle
 
   const fetchSetAndCards = async () => {
     try {
@@ -109,11 +109,22 @@ const Study = () => {
   };
 
   const filterCards = () => {
+    const currentCard = displayedCards[currentIndex];
+    
     if (starredOnly) {
       const starred = flashcards.filter(c => c.is_starred);
       setDisplayedCards(starred.length > 0 ? starred : flashcards);
     } else {
       setDisplayedCards(flashcards);
+    }
+    
+    // Try to maintain current card position after filtering
+    if (currentCard) {
+      const newIndex = flashcards.findIndex(c => c.id === currentCard.id);
+      if (newIndex !== -1 && newIndex < flashcards.length) {
+        setCurrentIndex(newIndex);
+        return;
+      }
     }
     setCurrentIndex(0);
   };
@@ -158,13 +169,16 @@ const Study = () => {
           });
       }
 
-      // Update local state
-      setFlashcards(flashcards.map(c => 
+      // Update local state without re-filtering
+      const updatedFlashcards = flashcards.map(c => 
         c.id === currentCard.id ? { ...c, is_starred: newStarredState } : c
-      ));
-      setDisplayedCards(displayedCards.map(c => 
+      );
+      const updatedDisplayed = displayedCards.map(c => 
         c.id === currentCard.id ? { ...c, is_starred: newStarredState } : c
-      ));
+      );
+      
+      setFlashcards(updatedFlashcards);
+      setDisplayedCards(updatedDisplayed);
 
       toast.success(newStarredState ? "Card starred!" : "Star removed");
     } catch (error) {

@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
-import { Brain, Plus, LogOut, BookOpen, Users, Settings as SettingsIcon } from "lucide-react";
+import { Brain, Plus, LogOut, BookOpen, Users, Settings as SettingsIcon, TrendingUp, Calendar, Network, Timer } from "lucide-react";
 import { toast } from "sonner";
 import SetCard from "@/components/SetCard";
 import CreateSetDialog from "@/components/CreateSetDialog";
+import PomodoroTimer from "@/components/PomodoroTimer";
 
 interface FlashcardSet {
   id: string;
@@ -141,6 +142,46 @@ const Dashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
+        {/* Feature Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <Button
+            variant="outline"
+            className="h-24 flex flex-col items-center justify-center gap-2"
+            onClick={() => navigate("/memory-tracking")}
+          >
+            <TrendingUp className="w-6 h-6" />
+            <span className="font-medium">Memory Tracking</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="h-24 flex flex-col items-center justify-center gap-2"
+            onClick={() => navigate("/study-heatmap")}
+          >
+            <Calendar className="w-6 h-6" />
+            <span className="font-medium">Study Heatmap</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="h-24 flex flex-col items-center justify-center gap-2"
+            onClick={() => {
+              if (sets.length > 0) {
+                navigate(`/mindmap/${sets[0].id}`);
+              } else {
+                toast.error("Create a flashcard set first!");
+              }
+            }}
+          >
+            <Network className="w-6 h-6" />
+            <span className="font-medium">Mindmap View</span>
+          </Button>
+          <div className="h-24"></div>
+        </div>
+
+        {/* Pomodoro Timer */}
+        <div className="mb-8 max-w-md mx-auto">
+          <PomodoroTimer />
+        </div>
+
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-3xl font-bold">Your Flashcard Sets</h2>
