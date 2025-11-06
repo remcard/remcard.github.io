@@ -137,10 +137,8 @@ const GravityGame = () => {
     if (matchedWord) {
       setFallingWords((prev) => prev.filter((w) => w.id !== matchedWord.id));
       setScore((s) => s + Math.round((80 - matchedWord.y) * 10));
-      toast.success("Correct! +points");
       setUserInput("");
     } else {
-      toast.error("No match found");
       setUserInput("");
     }
   };
@@ -233,7 +231,7 @@ const GravityGame = () => {
 
   return (
     <div className="min-h-screen bg-background overflow-hidden">
-      <header className="border-b border-border bg-card shadow-sm">
+      <header className="relative z-10 border-b border-border bg-card shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Button variant="ghost" onClick={() => navigate("/")}>
