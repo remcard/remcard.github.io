@@ -36,6 +36,9 @@ const GravityGame = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
   const [showTerms, setShowTerms] = useState(true);
+  const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">("medium");
+  const [spawnRate, setSpawnRate] = useState(2000);
+  const [baseSpeed, setBaseSpeed] = useState(0.5);
 
   useEffect(() => {
     fetchSetAndCards();
@@ -76,14 +79,14 @@ const GravityGame = () => {
           answer: showTerms ? randomCard.definition : randomCard.term,
           y: -10,
           x: 10 + Math.random() * 80,
-          speed: 0.5 + Math.random() * 0.5,
+          speed: baseSpeed + Math.random() * baseSpeed,
         };
         setFallingWords((prev) => [...prev, newWord]);
       }
-    }, 2000);
+    }, spawnRate);
 
     return () => clearInterval(spawnInterval);
-  }, [flashcards, gameStarted, isGameOver]);
+  }, [flashcards, gameStarted, isGameOver, spawnRate, baseSpeed, showTerms]);
 
   useEffect(() => {
     if (hearts <= 0 && gameStarted) {
@@ -143,8 +146,22 @@ const GravityGame = () => {
     }
   };
 
-  const startGame = (mode: boolean) => {
+  const startGame = (mode: boolean, diff: "easy" | "medium" | "hard") => {
     setShowTerms(mode);
+    setDifficulty(diff);
+    
+    // Set difficulty parameters
+    if (diff === "easy") {
+      setSpawnRate(3000);
+      setBaseSpeed(0.3);
+    } else if (diff === "medium") {
+      setSpawnRate(2000);
+      setBaseSpeed(0.5);
+    } else {
+      setSpawnRate(1200);
+      setBaseSpeed(0.8);
+    }
+    
     setGameStarted(true);
     setHearts(5);
     setScore(0);
@@ -185,14 +202,42 @@ const GravityGame = () => {
                 <li>Score more points by answering quickly!</li>
               </ul>
             </div>
+            
+            <div className="space-y-3">
+              <h3 className="font-semibold text-lg text-center">Select Difficulty:</h3>
+              <div className="grid grid-cols-3 gap-3">
+                <Button 
+                  onClick={() => setDifficulty("easy")} 
+                  variant={difficulty === "easy" ? "default" : "outline"}
+                  className="transition-all duration-200"
+                >
+                  Easy
+                </Button>
+                <Button 
+                  onClick={() => setDifficulty("medium")} 
+                  variant={difficulty === "medium" ? "default" : "outline"}
+                  className="transition-all duration-200"
+                >
+                  Medium
+                </Button>
+                <Button 
+                  onClick={() => setDifficulty("hard")} 
+                  variant={difficulty === "hard" ? "default" : "outline"}
+                  className="transition-all duration-200"
+                >
+                  Hard
+                </Button>
+              </div>
+            </div>
+
             <div className="space-y-3">
               <h3 className="font-semibold text-lg text-center">Choose what falls:</h3>
               <div className="grid grid-cols-2 gap-4">
-                <Button onClick={() => startGame(true)} className="w-full" size="lg" variant="default">
+                <Button onClick={() => startGame(true, difficulty)} className="w-full" size="lg" variant="default">
                   Terms Fall
                   <p className="text-xs mt-1 opacity-80">(Type definitions)</p>
                 </Button>
-                <Button onClick={() => startGame(false)} className="w-full" size="lg" variant="secondary">
+                <Button onClick={() => startGame(false, difficulty)} className="w-full" size="lg" variant="secondary">
                   Definitions Fall
                   <p className="text-xs mt-1 opacity-80">(Type terms)</p>
                 </Button>
