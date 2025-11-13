@@ -15,7 +15,6 @@ import GamePlay from "./pages/GamePlay";
 import Settings from "./pages/Settings";
 import MatchingGame from "./pages/MatchingGame";
 import LearnMode from "./pages/LearnMode";
-import TestMode from "./pages/TestMode";
 import GravityGame from "./pages/GravityGame";
 
 const queryClient = new QueryClient();
@@ -38,7 +37,6 @@ const App = () => (
           <Route path="/game/play/:gameId" element={<GamePlay />} />
           <Route path="/matching/:id" element={<MatchingGame />} />
           <Route path="/learn/:id" element={<LearnMode />} />
-          <Route path="/test/:id" element={<TestMode />} />
           <Route path="/gravity/:id" element={<GravityGame />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
